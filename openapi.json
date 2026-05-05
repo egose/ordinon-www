@@ -1,0 +1,3552 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Ordinon Public API",
+    "description": "The Ordinon external API for integrating with the document platform.",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/v1/organizations/me": {
+      "get": {
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Get current organization",
+        "description": "Get the organization associated with the API key.",
+        "operationId": "ext_get_my_org_v1_organizations_me_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__external__v1__organizations__OrganizationRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      },
+      "patch": {
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Update organization",
+        "description": "Update organization details (name, logo).",
+        "operationId": "ext_update_org_v1_organizations_me_patch",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrganizationUpdateRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__external__v1__organizations__OrganizationRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/me/detail": {
+      "get": {
+        "tags": [
+          "organizations"
+        ],
+        "summary": "Get organization detail",
+        "description": "Get the organization with document and member counts.",
+        "operationId": "ext_get_org_detail_v1_organizations_me_detail_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationDetailRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/organizations/me/members": {
+      "get": {
+        "tags": [
+          "organizations"
+        ],
+        "summary": "List organization members",
+        "description": "List active and pending members of the organization.",
+        "operationId": "ext_get_org_members_v1_organizations_me_members_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrganizationMembersRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/published": {
+      "get": {
+        "tags": [
+          "published"
+        ],
+        "summary": "List Public Published",
+        "description": "Public endpoint for the www site. Returns only publicly visible published versions.\nNo authentication required \u2014 filters to is_public == True only.",
+        "operationId": "list_public_published_v1_published_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          },
+          {
+            "name": "topic_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Topic Ids"
+            }
+          },
+          {
+            "name": "title",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Title"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse_DocumentVersionPublishedSummary_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "List documents",
+        "description": "List all documents in the organization.",
+        "operationId": "ext_list_documents_v1_documents_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "include_archived",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": false,
+              "title": "Include Archived"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse_DocumentSummaryRead_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Create document",
+        "description": "Create a new document.",
+        "operationId": "ext_create_document_v1_documents_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentSummaryRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/tags": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "List tags",
+        "description": "List all tags in the organization.",
+        "operationId": "ext_list_tags_v1_documents_tags_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TagRead"
+                  },
+                  "type": "array",
+                  "title": "Response Ext List Tags V1 Documents Tags Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/documents/topics": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "List topics",
+        "description": "List all available topics.",
+        "operationId": "ext_list_topics_v1_documents_topics_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/TopicRead"
+                  },
+                  "type": "array",
+                  "title": "Response Ext List Topics V1 Documents Topics Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/documents/{document_id}": {
+      "get": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Get document",
+        "description": "Get a single document with tags, topics, and version labels.",
+        "operationId": "ext_get_document_v1_documents__document_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentDetailRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Update document",
+        "description": "Update a document's metadata, tags, or topics.",
+        "operationId": "ext_update_document_v1_documents__document_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentSummaryRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/{document_id}/archive": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Archive document",
+        "description": "Archive (soft-delete) a document.",
+        "operationId": "ext_archive_document_v1_documents__document_id__archive_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DocumentSummaryRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/{document_id}/publish": {
+      "post": {
+        "tags": [
+          "documents"
+        ],
+        "summary": "Publish document version",
+        "description": "Publish a new version of a document from its current sections.",
+        "operationId": "ext_publish_document_v1_documents__document_id__publish_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DocumentPublishRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/{document_id}/sections": {
+      "get": {
+        "tags": [
+          "sections"
+        ],
+        "summary": "List sections",
+        "description": "List all top-level sections (with nested sub_sections) for a document. Content is omitted for brevity.",
+        "operationId": "ext_list_sections_v1_documents__document_id__sections_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SectionBriefRead"
+                  },
+                  "title": "Response Ext List Sections V1 Documents  Document Id  Sections Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "sections"
+        ],
+        "summary": "Create section",
+        "description": "Create a new section in a document.",
+        "operationId": "ext_create_section_v1_documents__document_id__sections_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SectionRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/{document_id}/sections/{section_id}": {
+      "get": {
+        "tags": [
+          "sections"
+        ],
+        "summary": "Get section",
+        "description": "Get a single section by ID, including its content and sub_sections.",
+        "operationId": "ext_get_section_v1_documents__document_id__sections__section_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "section_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Section Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SectionRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "sections"
+        ],
+        "summary": "Update section",
+        "description": "Update a section. Bypasses collaborative locks (not relevant for API usage).",
+        "operationId": "ext_update_section_v1_documents__document_id__sections__section_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "section_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Section Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SectionRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "sections"
+        ],
+        "summary": "Delete section",
+        "description": "Delete a section. Bypasses collaborative locks.",
+        "operationId": "ext_delete_section_v1_documents__document_id__sections__section_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "section_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Section Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/{document_id}/sections/reorder": {
+      "patch": {
+        "tags": [
+          "sections"
+        ],
+        "summary": "Reorder sections",
+        "description": "Reorder sections within a document (or within a parent section).",
+        "operationId": "ext_reorder_sections_v1_documents__document_id__sections_reorder_patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SectionReorderRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/{document_id}/versions": {
+      "get": {
+        "tags": [
+          "versions"
+        ],
+        "summary": "List versions",
+        "description": "List all versions of a document with pagination.",
+        "operationId": "ext_list_versions_v1_documents__document_id__versions_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaginatedResponse_VersionSummaryRead_"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/{document_id}/versions/labels": {
+      "get": {
+        "tags": [
+          "versions"
+        ],
+        "summary": "List version labels",
+        "description": "List version labels (id + label) for a document.",
+        "operationId": "ext_list_version_labels_v1_documents__document_id__versions_labels_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/VersionLabelRead"
+                  },
+                  "title": "Response Ext List Version Labels V1 Documents  Document Id  Versions Labels Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/documents/{document_id}/versions/{version_id}": {
+      "get": {
+        "tags": [
+          "versions"
+        ],
+        "summary": "Get version",
+        "description": "Get a single version by ID, including its snapshot data.",
+        "operationId": "ext_get_version_v1_documents__document_id__versions__version_id__get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "version_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Version Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionDetailRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "versions"
+        ],
+        "summary": "Update version",
+        "description": "Update a version's metadata, visibility, or access grants.",
+        "operationId": "ext_update_version_v1_documents__document_id__versions__version_id__patch",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "version_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Version Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/VersionUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/VersionDetailRead"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "versions"
+        ],
+        "summary": "Delete version",
+        "description": "Delete a version. Requires admin privileges.",
+        "operationId": "ext_delete_version_v1_documents__document_id__versions__version_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "document_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Document Id"
+            }
+          },
+          {
+            "name": "version_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Version Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api-keys": {
+      "get": {
+        "tags": [
+          "api-keys"
+        ],
+        "summary": "List API keys",
+        "description": "List all API keys for the organization.",
+        "operationId": "ext_list_api_keys_v1_api_keys_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 10,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__internal__v1__types__PaginatedResponse_APIKeyRead___1"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "api-keys"
+        ],
+        "summary": "Create API key",
+        "description": "Create a new API key. The raw key is only returned once during creation.",
+        "operationId": "ext_create_api_key_v1_api_keys_post",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/routers__external__v1__api_keys__APIKeyCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/routers__external__v1__api_keys__APIKeyCreateResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/api-keys/{key_id}": {
+      "delete": {
+        "tags": [
+          "api-keys"
+        ],
+        "summary": "Delete API key",
+        "description": "Delete an API key.",
+        "operationId": "ext_delete_api_key_v1_api_keys__key_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "Key Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/files/upload-init": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Initialize file upload",
+        "description": "Create a file record and return a SAS URL for direct upload to Azure.\nThe client should PUT the file content to the returned URI, then call /verify.",
+        "operationId": "ext_upload_init_v1_files_upload_init_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileUploadInitRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileUploadInitResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/files/verify": {
+      "post": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Verify file upload",
+        "description": "Mark a file as uploaded after the client has finished uploading to the SAS URL.",
+        "operationId": "ext_verify_upload_v1_files_verify_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FileVerifyRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileVerifyResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ]
+      }
+    },
+    "/v1/files/{file_id}/stream-uri": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Get file stream URI",
+        "description": "Get a temporary SAS read URL for a file.",
+        "operationId": "ext_get_stream_uri_v1_files__file_id__stream_uri_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "File Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FileStreamUriResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/files/{file_id}/stream": {
+      "get": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Stream file content",
+        "description": "Stream the file content directly (proxied from Azure).",
+        "operationId": "ext_stream_file_v1_files__file_id__stream_get",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "File Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/files/{file_id}": {
+      "delete": {
+        "tags": [
+          "files"
+        ],
+        "summary": "Delete file",
+        "description": "Delete a file from storage and the database.",
+        "operationId": "ext_delete_file_v1_files__file_id__delete",
+        "security": [
+          {
+            "HTTPBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid",
+              "title": "File Id"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful Response"
+          },
+          "404": {
+            "description": "Not found"
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payments/webhook": {
+      "post": {
+        "tags": [
+          "payments-webhook"
+        ],
+        "summary": "Stripe Webhook",
+        "operationId": "stripe_webhook_v1_payments_webhook_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ActiveMemberRead": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "picture": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Picture"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "role"
+        ],
+        "title": "ActiveMemberRead"
+      },
+      "DocumentCreateRequest": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "tag_names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tag Names"
+          },
+          "topic_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Topic Ids"
+          },
+          "variables": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Variables"
+          },
+          "settings": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/routers__external__v1__documents__DocumentSettings"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "title": "DocumentCreateRequest"
+      },
+      "DocumentDetailRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Organization Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "variables": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Variables"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/routers__external__v1__documents__DocumentSettings"
+          },
+          "archived_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "version_count": {
+            "type": "integer",
+            "title": "Version Count",
+            "default": 0
+          },
+          "tags": {
+            "items": {
+              "$ref": "#/components/schemas/TagRead"
+            },
+            "type": "array",
+            "title": "Tags",
+            "default": []
+          },
+          "topics": {
+            "items": {
+              "$ref": "#/components/schemas/TopicRead"
+            },
+            "type": "array",
+            "title": "Topics",
+            "default": []
+          },
+          "version_labels": {
+            "items": {
+              "$ref": "#/components/schemas/VersionLabelRead"
+            },
+            "type": "array",
+            "title": "Version Labels",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id",
+          "title",
+          "variables",
+          "settings",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "DocumentDetailRead"
+      },
+      "DocumentPublishRequest": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "maxLength": 255,
+            "title": "Label"
+          },
+          "effective_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Date"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label"
+        ],
+        "title": "DocumentPublishRequest"
+      },
+      "DocumentSummaryRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "organization_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Organization Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "variables": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Variables"
+          },
+          "settings": {
+            "$ref": "#/components/schemas/routers__external__v1__documents__DocumentSettings"
+          },
+          "archived_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Archived At"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "version_count": {
+            "type": "integer",
+            "title": "Version Count",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "organization_id",
+          "title",
+          "variables",
+          "settings",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "DocumentSummaryRead"
+      },
+      "DocumentUpdateRequest": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "description": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Description"
+          },
+          "tag_names": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Tag Names"
+          },
+          "topic_ids": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Topic Ids"
+          },
+          "variables": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Variables"
+          },
+          "settings": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/routers__external__v1__documents__DocumentSettings"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "title": "DocumentUpdateRequest"
+      },
+      "DocumentVersionPublishedSummary": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "documentId": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Documentid"
+          },
+          "versionLabel": {
+            "type": "string",
+            "title": "Versionlabel"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Createdat"
+          },
+          "effectiveDate": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effectivedate"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "documentTitle": {
+            "type": "string",
+            "title": "Documenttitle"
+          },
+          "markdownPreview": {
+            "type": "string",
+            "title": "Markdownpreview"
+          },
+          "topics": {
+            "items": {
+              "$ref": "#/components/schemas/TopicRead"
+            },
+            "type": "array",
+            "title": "Topics"
+          },
+          "isPublic": {
+            "type": "boolean",
+            "title": "Ispublic",
+            "default": false
+          },
+          "isSubscribed": {
+            "type": "boolean",
+            "title": "Issubscribed",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "documentId",
+          "versionLabel",
+          "createdAt",
+          "documentTitle",
+          "markdownPreview"
+        ],
+        "title": "DocumentVersionPublishedSummary"
+      },
+      "FileStreamUriResponse": {
+        "properties": {
+          "uri": {
+            "type": "string",
+            "title": "Uri"
+          },
+          "file_name": {
+            "type": "string",
+            "title": "File Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "uri",
+          "file_name"
+        ],
+        "title": "FileStreamUriResponse"
+      },
+      "FileUploadInitRequest": {
+        "properties": {
+          "file_name": {
+            "type": "string",
+            "title": "File Name"
+          },
+          "file_type": {
+            "type": "string",
+            "title": "File Type"
+          },
+          "file_size": {
+            "type": "integer",
+            "title": "File Size"
+          },
+          "document_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Document Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_name",
+          "file_type",
+          "file_size"
+        ],
+        "title": "FileUploadInitRequest"
+      },
+      "FileUploadInitResponse": {
+        "properties": {
+          "uri": {
+            "type": "string",
+            "title": "Uri"
+          },
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "File Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "uri",
+          "file_id"
+        ],
+        "title": "FileUploadInitResponse"
+      },
+      "FileVerifyRequest": {
+        "properties": {
+          "file_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "File Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file_id"
+        ],
+        "title": "FileVerifyRequest"
+      },
+      "FileVerifyResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "original_name": {
+            "type": "string",
+            "title": "Original Name"
+          },
+          "mime_type": {
+            "type": "string",
+            "title": "Mime Type"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "title": "Size Bytes"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "original_name",
+          "mime_type",
+          "size_bytes",
+          "status"
+        ],
+        "title": "FileVerifyResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "OrganizationDetailRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "logo_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo Url"
+          },
+          "plan_type": {
+            "type": "string",
+            "title": "Plan Type"
+          },
+          "subscription_status": {
+            "type": "string",
+            "title": "Subscription Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          },
+          "document_count": {
+            "type": "integer",
+            "title": "Document Count",
+            "default": 0
+          },
+          "member_count": {
+            "type": "integer",
+            "title": "Member Count",
+            "default": 0
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "plan_type",
+          "subscription_status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "OrganizationDetailRead"
+      },
+      "OrganizationMembersRead": {
+        "properties": {
+          "active": {
+            "items": {
+              "$ref": "#/components/schemas/ActiveMemberRead"
+            },
+            "type": "array",
+            "title": "Active"
+          },
+          "pending": {
+            "items": {
+              "$ref": "#/components/schemas/routers__external__v1__organizations__PendingMemberRead"
+            },
+            "type": "array",
+            "title": "Pending"
+          }
+        },
+        "type": "object",
+        "required": [
+          "active",
+          "pending"
+        ],
+        "title": "OrganizationMembersRead"
+      },
+      "OrganizationUpdateRequest": {
+        "properties": {
+          "name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Name"
+          },
+          "logo_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo Url"
+          }
+        },
+        "type": "object",
+        "title": "OrganizationUpdateRequest"
+      },
+      "PageMargins": {
+        "properties": {
+          "top": {
+            "type": "number",
+            "title": "Top"
+          },
+          "right": {
+            "type": "number",
+            "title": "Right"
+          },
+          "bottom": {
+            "type": "number",
+            "title": "Bottom"
+          },
+          "left": {
+            "type": "number",
+            "title": "Left"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "mm",
+              "cm",
+              "in",
+              "px"
+            ],
+            "title": "Unit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "top",
+          "right",
+          "bottom",
+          "left",
+          "unit"
+        ],
+        "title": "PageMargins"
+      },
+      "PageSetup": {
+        "properties": {
+          "orientation": {
+            "type": "string",
+            "enum": [
+              "portrait",
+              "landscape"
+            ],
+            "title": "Orientation"
+          },
+          "size": {
+            "$ref": "#/components/schemas/PageSize"
+          },
+          "margins": {
+            "$ref": "#/components/schemas/PageMargins"
+          }
+        },
+        "type": "object",
+        "required": [
+          "orientation",
+          "size",
+          "margins"
+        ],
+        "title": "PageSetup"
+      },
+      "PageSize": {
+        "properties": {
+          "width": {
+            "type": "number",
+            "title": "Width"
+          },
+          "height": {
+            "type": "number",
+            "title": "Height"
+          },
+          "unit": {
+            "type": "string",
+            "enum": [
+              "pt",
+              "mm",
+              "cm",
+              "in",
+              "px"
+            ],
+            "title": "Unit"
+          }
+        },
+        "type": "object",
+        "required": [
+          "width",
+          "height",
+          "unit"
+        ],
+        "title": "PageSize"
+      },
+      "PaginatedResponse_DocumentSummaryRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentSummaryRead"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "has_next": {
+            "type": "boolean",
+            "title": "Has Next"
+          },
+          "has_previous": {
+            "type": "boolean",
+            "title": "Has Previous"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "has_next",
+          "has_previous"
+        ],
+        "title": "PaginatedResponse[DocumentSummaryRead]"
+      },
+      "PaginatedResponse_DocumentVersionPublishedSummary_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/DocumentVersionPublishedSummary"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "has_next": {
+            "type": "boolean",
+            "title": "Has Next"
+          },
+          "has_previous": {
+            "type": "boolean",
+            "title": "Has Previous"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "has_next",
+          "has_previous"
+        ],
+        "title": "PaginatedResponse[DocumentVersionPublishedSummary]"
+      },
+      "PaginatedResponse_VersionSummaryRead_": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/VersionSummaryRead"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "has_next": {
+            "type": "boolean",
+            "title": "Has Next"
+          },
+          "has_previous": {
+            "type": "boolean",
+            "title": "Has Previous"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "has_next",
+          "has_previous"
+        ],
+        "title": "PaginatedResponse[VersionSummaryRead]"
+      },
+      "SectionBriefRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "order_index": {
+            "type": "integer",
+            "title": "Order Index"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          },
+          "sub_sections": {
+            "items": {
+              "$ref": "#/components/schemas/SectionBriefRead"
+            },
+            "type": "array",
+            "title": "Sub Sections",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "order_index"
+        ],
+        "title": "SectionBriefRead"
+      },
+      "SectionCreateRequest": {
+        "properties": {
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "title": "SectionCreateRequest"
+      },
+      "SectionRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "order_index": {
+            "type": "integer",
+            "title": "Order Index"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          },
+          "sub_sections": {
+            "items": {
+              "$ref": "#/components/schemas/SectionRead"
+            },
+            "type": "array",
+            "title": "Sub Sections",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "order_index"
+        ],
+        "title": "SectionRead"
+      },
+      "SectionReorderRequest": {
+        "properties": {
+          "ordered_ids": {
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "type": "array",
+            "title": "Ordered Ids"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "ordered_ids"
+        ],
+        "title": "SectionReorderRequest"
+      },
+      "SectionUpdateRequest": {
+        "properties": {
+          "title": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Title"
+          },
+          "content": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Content"
+          },
+          "order_index": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Order Index"
+          },
+          "parent_id": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "uuid"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Parent Id"
+          }
+        },
+        "type": "object",
+        "title": "SectionUpdateRequest"
+      },
+      "TagRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "TagRead"
+      },
+      "TopicRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "TopicRead"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "VersionDetailRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "document_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Document Id"
+          },
+          "version_label": {
+            "type": "string",
+            "title": "Version Label"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "effective_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Date"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "snapshot": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Snapshot"
+          },
+          "is_public": {
+            "type": "boolean",
+            "title": "Is Public"
+          },
+          "link_sharing_enabled": {
+            "type": "boolean",
+            "title": "Link Sharing Enabled"
+          },
+          "link_sharing_token": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Link Sharing Token"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "document_id",
+          "version_label",
+          "created_at",
+          "snapshot",
+          "is_public",
+          "link_sharing_enabled"
+        ],
+        "title": "VersionDetailRead"
+      },
+      "VersionLabelRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "label": {
+            "type": "string",
+            "title": "Label"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "label"
+        ],
+        "title": "VersionLabelRead"
+      },
+      "VersionSummaryRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "document_id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Document Id"
+          },
+          "version_label": {
+            "type": "string",
+            "title": "Version Label"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "effective_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Date"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "document_id",
+          "version_label",
+          "created_at"
+        ],
+        "title": "VersionSummaryRead"
+      },
+      "VersionUpdateRequest": {
+        "properties": {
+          "label": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 255
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Label"
+          },
+          "effective_date": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Effective Date"
+          },
+          "notes": {
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2000
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Notes"
+          },
+          "is_public": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Public"
+          },
+          "link_sharing_enabled": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Link Sharing Enabled"
+          },
+          "allowed_emails": {
+            "anyOf": [
+              {
+                "items": {
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Allowed Emails"
+          }
+        },
+        "type": "object",
+        "title": "VersionUpdateRequest"
+      },
+      "routers__external__v1__api_keys__APIKeyCreateRequest": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "OWNER",
+              "ADMIN",
+              "EDITOR",
+              "VIEWER"
+            ],
+            "title": "Role",
+            "default": "VIEWER"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "APIKeyCreateRequest"
+      },
+      "routers__external__v1__api_keys__APIKeyCreateResponse": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "key_prefix": {
+            "type": "string",
+            "title": "Key Prefix"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          },
+          "raw_key": {
+            "type": "string",
+            "title": "Raw Key"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "key_prefix",
+          "role",
+          "scopes",
+          "created_at",
+          "raw_key"
+        ],
+        "title": "APIKeyCreateResponse"
+      },
+      "routers__external__v1__api_keys__APIKeyRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "key_prefix": {
+            "type": "string",
+            "title": "Key Prefix"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "scopes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Scopes"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "expires_at": {
+            "anyOf": [
+              {
+                "type": "string",
+                "format": "date-time"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Expires At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "key_prefix",
+          "role",
+          "scopes",
+          "created_at"
+        ],
+        "title": "APIKeyRead"
+      },
+      "routers__external__v1__documents__DocumentSettings": {
+        "properties": {
+          "bullet_hierarchy": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Bullet Hierarchy"
+          },
+          "ordered_hierarchy": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Ordered Hierarchy"
+          },
+          "font_family": {
+            "type": "string",
+            "title": "Font Family"
+          },
+          "base_font_size": {
+            "type": "integer",
+            "title": "Base Font Size"
+          },
+          "page_setup": {
+            "$ref": "#/components/schemas/PageSetup"
+          }
+        },
+        "type": "object",
+        "required": [
+          "bullet_hierarchy",
+          "ordered_hierarchy",
+          "font_family",
+          "base_font_size",
+          "page_setup"
+        ],
+        "title": "DocumentSettings"
+      },
+      "routers__external__v1__organizations__OrganizationRead": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "slug": {
+            "type": "string",
+            "title": "Slug"
+          },
+          "logo_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Logo Url"
+          },
+          "plan_type": {
+            "type": "string",
+            "title": "Plan Type"
+          },
+          "subscription_status": {
+            "type": "string",
+            "title": "Subscription Status"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Created At"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Updated At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "slug",
+          "plan_type",
+          "subscription_status",
+          "created_at",
+          "updated_at"
+        ],
+        "title": "OrganizationRead"
+      },
+      "routers__external__v1__organizations__PendingMemberRead": {
+        "properties": {
+          "email": {
+            "type": "string",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "invited_at": {
+            "type": "string",
+            "format": "date-time",
+            "title": "Invited At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "email",
+          "role",
+          "invited_at"
+        ],
+        "title": "PendingMemberRead"
+      },
+      "routers__internal__v1__types__PaginatedResponse_APIKeyRead___1": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/routers__external__v1__api_keys__APIKeyRead"
+            },
+            "type": "array",
+            "title": "Items"
+          },
+          "total": {
+            "type": "integer",
+            "title": "Total"
+          },
+          "limit": {
+            "type": "integer",
+            "title": "Limit"
+          },
+          "offset": {
+            "type": "integer",
+            "title": "Offset"
+          },
+          "has_next": {
+            "type": "boolean",
+            "title": "Has Next"
+          },
+          "has_previous": {
+            "type": "boolean",
+            "title": "Has Previous"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items",
+          "total",
+          "limit",
+          "offset",
+          "has_next",
+          "has_previous"
+        ],
+        "title": "PaginatedResponse[APIKeyRead]"
+      }
+    },
+    "securitySchemes": {
+      "HTTPBearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  }
+}

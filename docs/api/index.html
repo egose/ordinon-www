@@ -1,0 +1,48 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="UTF-8"><meta name="generator" content="Astro v5.18.1"><meta name="description" content="Reference documentation for Ordinon's public API."><meta name="viewport" content="width=device-width"><meta name="theme-color" content="#010101"><link rel="icon" type="image/svg+xml" href="/favicon.svg"><link rel="canonical" href="http://localhost:4321/docs/api/"><meta property="og:type" content="website"><meta property="og:title" content="Ordinon API Reference"><meta property="og:description" content="Reference documentation for Ordinon's public API."><meta property="og:url" content="http://localhost:4321/docs/api/"><meta property="og:image" content="http://localhost:4321/favicon.svg"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Ordinon API Reference"><meta name="twitter:description" content="Reference documentation for Ordinon's public API."><meta name="twitter:image" content="http://localhost:4321/favicon.svg"><title>Ordinon API Reference</title><link rel="stylesheet" href="/_astro/customers.B-YWxMlR.css"></head> <body class="bg-[#010101] text-white font-sans antialiased">  <div><!doctype html>
+<html>
+  <head>
+    <title>Ordinon API Reference</title>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1" />
+  </head>
+  <body>
+    <div id="app"></div>
+    <!-- Load the Script -->
+    <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+
+    <!-- Initialize the Scalar API Reference -->
+    <script type="text/javascript">
+      Scalar.createApiReference('#app', {
+        "url": "/openapi.json",
+        "darkMode": true,
+        "hideDownloadButton": false,
+        "favicon": "/favicon.svg",
+        "theme": "purple"
+      })
+    </script>
+  </body>
+</html></div>  </body></html> <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    var timer = setInterval(function () {
+      var sidebar = document.querySelector('aside.t-doc__sidebar')
+      if (!sidebar) return
+      clearInterval(timer)
+
+      var link = document.createElement('a')
+      link.href = '/'
+      link.textContent = '\u2190 ordinon.com'
+      link.style.cssText =
+        'display:block;padding:10px 12px;font-size:14px;font-weight:500;height:40px;' +
+        'color:var(--scalar-color-2);' +
+        'border-bottom:1px solid var(--scalar-border-color);' +
+        'text-decoration:none;flex-shrink:0;'
+
+      link.onmouseenter = function () { link.style.color = 'var(--scalar-color-1)' }
+      link.onmouseleave = function () { link.style.color = 'var(--scalar-color-2)' }
+
+      sidebar.insertBefore(link, sidebar.firstChild)
+    }, 100)
+  })
+</script>
